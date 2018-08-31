@@ -1,0 +1,70 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - mtl
+scope: source.metal
+
+contexts:
+  # The prototype context is prepended to all contexts but those setting
+  # meta_include_prototype: false.
+  prototype:
+    - include: comments
+
+  main:
+    # The main context is the initial starting point of our syntax.
+    # Include other contexts from here (or specify them directly).
+    - include: strings
+    - include: operators
+    - include: no_indent
+    - include: actions
+
+  strings:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character.
+    - match: '"'
+      scope: punctuation.definition.string.begin.metal
+      push: double_quoted_string
+    - match: \'
+      scope: punctuation.definition.string.begin.metal
+      push: single_quoted_string
+
+  double_quoted_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.metal
+    - match: \\"
+      scope: constant.character.escape.metal
+    - match: '"'
+      scope: punctuation.definition.string.end.metal
+      pop: true
+
+  single_quoted_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.metal
+    - match: \\'
+      scope: constant.character.escape.metal
+    - match: \'
+      scope: punctuation.definition.string.end.metal
+      pop: true
+
+  comments:
+    # Comments begin with a '#' and finish at the end of the line.
+    - match: '#'
+      scope: punctuation.definition.comment.metal
+      push:
+        # This is an anonymous context push for brevity.
+        - meta_scope: comment.line.metal
+        - match: $\n?
+          pop: true
+
+  operators:
+    - match: '\b(after|against|and|are|as|at|by|cannot|contains|detects|disappears|do|does not|equals|for|from|has|have|if|in|is|matches|of|on|or|returns|shows|succeeds|to|under|via|with|within|without)\b'
+      scope: keyword.operator.metal
+
+  no_indent:
+    - match: '\b\A.*\b'
+      scope: entity.name.class.metal
+
+  actions:
+    - match: '\b(accept|access|ActionChainClick|activate|add|allow|archive|attach|block|cancel|capture|change|check|clear|click|close|collect|compare|connect|consume|copy|create|create_registry|customize|debug|decode|delete|detect|disable|disconnect|dismiss|display|double click|download|download_binary|dynamic register|dynamic unregister|edit|enable|end|enter|exclude|expire|extract|fail|fill|find|fix|force|generate|get|go to|hide|install|invoke|kill|launch|list|load|lock|log off|log on|login|manage|map|marshall|monitor|mount|move|Multiply|navigate to|open|over install|parse|PassIfDSdisabled|PassIfDSenabled|pause|perform|pip|post|prepare|press|print|process|production install|publish|publishRequest|purchase|quarantine|quit|randomize|reboot|receive|record|refresh|register|reject|release|remove|rename|renew|replace|reset|restart|restore|resume|run|save|schedule|search for|select|selectvalue|send|set|setup|setupPassIfDSenabled|share|show|skip|Snapshot|start|stop|store|subscribe|subscribeFilter|subscribeRequest|switch|test|trigger|truncate|trust|uninstall|unlock|unregister|unselect|unset|unsubscribe|untrust|unzip|upgrade|upload|validate|verify|wait|wait till|walkthrough)\b'
+      scope: variable.function.metal
